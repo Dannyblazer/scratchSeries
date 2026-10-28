@@ -59,7 +59,7 @@ func executeCommand(executablePath string, originalName string, args []string) e
 func main() {
 	// 1. Move reader outside the loop to prevent memory allocation leaks
 	reader := bufio.NewReader(os.Stdin)
-	builtIns := []string{"echo", "exit", "type"}
+	builtIns := []string{"echo", "exit", "type", "pwd"}
 
 mainLoop:
 	for {
@@ -106,6 +106,13 @@ mainLoop:
 		case "echo":
 			remainingWords := strings.Join(command[1:], " ")
 			fmt.Println(remainingWords)
+		case "pwd":
+			cwd, err := os.Getwd()
+			if err != nil {
+				fmt.Println("Error getting current directory:", err)
+				return
+			}
+			fmt.Println(cwd)
 		default:
 			// 2. Use your custom findInPath or exec.LookPath consistently
 			path, err := findInPath(command[0])
